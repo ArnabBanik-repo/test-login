@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const schema = new mongoose.Schema({
     name: {
         type: String,
@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
         length: 9,
+        unique: true,
     },
     block: {
         type: String,
@@ -18,6 +19,6 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-});
-const User = mongoose.model('User', schema);
-module.exports = User;
+})
+const User = mongoose.model('User', schema)
+module.exports = User
