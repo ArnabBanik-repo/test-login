@@ -11,6 +11,9 @@ passport.use(
             passReqToCallback: true,
         },
         function (request, accessToken, refreshToken, profile, done) {
+            if (profile.email.indexOf('vitstudent.ac.in') == -1) {
+                return done(null, null)
+            }
             return done(null, profile)
         }
     )

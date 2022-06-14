@@ -3,20 +3,12 @@ exports.loginPage = (req, res) => {
 }
 
 exports.profilePage = (req, res) => {
-    if (req.user.email.indexOf('vitstudent.ac.in') == -1) res.redirect('/fail')
-    else res.render('dashboard', { username: req.user.displayName })
+    res.render('dashboard', { username: req.user.displayName })
 }
 
 exports.failPage = (req, res) => {
-    if (req.user)
-        req.logout(function (err) {
-            if (err) {
-                return next(err)
-            }
-            res.redirect('/')
-        })
     res.send(
-        "<p>Please use a VIT email account</p><a href = '/'>Back to login</a>"
+        "<p>Please use a vit student account</p><a href = '/'>Back to login</a>"
     )
 }
 
@@ -25,6 +17,11 @@ exports.logOut = (req, res) => {
         if (err) {
             return next(err)
         }
-        res.redirect('/')
+        req.session.destroy((err) => {
+            if (err) {
+                return next(err)
+            }
+            res.redirect('/')
+        })
     })
 }

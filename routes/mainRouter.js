@@ -10,7 +10,7 @@ const {
 const router = express.Router()
 
 function isLoggedIn(req, res, next) {
-    console.log(req.user)
+    // console.log(req.user)
     req.user ? next() : res.redirect('/')
 }
 
@@ -18,7 +18,10 @@ router.route('/').get(loginPage)
 
 router.use(
     '/google/auth',
-    passport.authenticate('google', { scope: ['email', 'profile'] })
+    passport.authenticate('google', {
+        scope: ['email', 'profile'],
+        hostedDomain: 'vitstudent.ac.in',
+    })
 )
 router.use('/profile', isLoggedIn)
 
