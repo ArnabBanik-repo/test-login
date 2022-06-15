@@ -43,11 +43,11 @@
                     }),
                 })
                     .then((res) => res.json())
-                    .then(
-                        (data) =>
-                            (document.getElementById('result').innerHTML =
-                                JSON.stringify(data.status))
-                    )
+                    .then((data) => {
+                        if (data.status === 'success')
+                            document.getElementById('result').innerHTML =
+                                'Phone number updated successfully';
+                    })
                     .catch((err) => console.log(`Some error occurred ${err}`));
             }
 
