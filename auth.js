@@ -1,4 +1,5 @@
 const passport = require('passport')
+const User = require('./models/user')
 var GoogleStrategy = require('passport-google-oauth2').Strategy
 
 passport.use(
@@ -10,10 +11,14 @@ passport.use(
             callbackURL: 'http://localhost:3000/dashboard',
             passReqToCallback: true,
         },
-        function (request, accessToken, refreshToken, profile, done) {
+        async function (request, accessToken, refreshToken, profile, done) {
             if (profile.email.indexOf('vitstudent.ac.in') == -1) {
                 return done(null, null)
             }
+            await User.findOrCreate({
+                name: profile.given_name,
+                email: profile.email,
+            })
             return done(null, profile)
         }
     )

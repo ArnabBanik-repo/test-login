@@ -8,6 +8,52 @@
     </head>
     <body>
         <h1>Welcome <%= username %></h1>
+        <p><%= email %></p>
+
+        <form id="form">
+            <input type="text" placeholder="Enter phone number" id="phone" />
+            <input type="submit" value="Add phone number" />
+        </form>
+
+        <div id="result"></div>
+
         <a href="/logout"><button>Logout</button></a>
+
+        <script>
+            function getPhone(event) {
+                event.preventDefault();
+                const phone = document.getElementById('phone').value;
+                const email = '<%= email %>';
+
+                console.log(
+                    JSON.stringify({
+                        phone: phone,
+                        email: email,
+                    })
+                );
+
+                const response = fetch('/api/v1/users', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        email: email,
+                    }),
+                })
+                    .then((res) => res.json())
+                    .then(
+                        (data) =>
+                            (document.getElementById('result').innerHTML =
+                                JSON.stringify(data.status))
+                    )
+                    .catch((err) => console.log(`Some error occurred ${err}`));
+            }
+
+            document
+                .getElementById('form')
+                .addEventListener('submit', getPhone);
+        </script>
     </body>
 </html>

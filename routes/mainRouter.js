@@ -1,20 +1,21 @@
-const express = require('express')
-const passport = require('passport')
+const express = require('express');
+const passport = require('passport');
+
 const {
     loginPage,
     profilePage,
     failPage,
     logOut,
-} = require('../controllers/mainController')
+    addPhone,
+} = require('../controllers/mainController');
 
-const router = express.Router()
+const router = express.Router();
 
 function isLoggedIn(req, res, next) {
-    // console.log(req.user)
-    req.user ? next() : res.redirect('/')
+    req.user ? next() : res.redirect('/');
 }
 
-router.route('/').get(loginPage)
+router.route('/').get(loginPage);
 
 router.use(
     '/google/auth',
@@ -22,12 +23,12 @@ router.use(
         scope: ['email', 'profile'],
         hostedDomain: 'vitstudent.ac.in',
     })
-)
-router.use('/profile', isLoggedIn)
+);
 
-router.route('/profile').get(profilePage)
+router.use('/profile', isLoggedIn);
+router.route('/profile').get(profilePage);
 
-router.route('/fail').get(failPage)
+router.route('/fail').get(failPage);
 
 router.use(
     '/dashboard',
@@ -35,8 +36,8 @@ router.use(
         successRedirect: '/profile',
         failureRedirect: '/fail',
     })
-)
+);
 
-router.get('/logout', logOut)
+router.get('/logout', logOut);
 
-module.exports = router
+module.exports = router;
