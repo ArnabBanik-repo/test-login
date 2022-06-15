@@ -6,7 +6,7 @@ const {
     profilePage,
     failPage,
     logOut,
-    addPhone,
+    listPage,
 } = require('../controllers/mainController');
 
 const router = express.Router();
@@ -16,7 +16,6 @@ function isLoggedIn(req, res, next) {
 }
 
 router.route('/').get(loginPage);
-
 router.use(
     '/google/auth',
     passport.authenticate('google', {
@@ -27,6 +26,9 @@ router.use(
 
 router.use('/profile', isLoggedIn);
 router.route('/profile').get(profilePage);
+
+router.use('/listProduct', isLoggedIn);
+router.route('/listProduct').get(listPage);
 
 router.route('/fail').get(failPage);
 

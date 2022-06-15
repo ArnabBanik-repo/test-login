@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const schema = new mongoose.Schema(
     {
         title: {
@@ -28,8 +28,11 @@ const schema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        listedBy: {
+            type: String,
+        },
     },
     { timestamps: true }
-)
-const Product = mongoose.model('Product', schema)
-module.exports = Product
+);
+const Product = mongoose.model('Product', schema);
+module.exports = Product;

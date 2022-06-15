@@ -1,4 +1,3 @@
-const User = require('../models/user');
 exports.loginPage = (req, res) => {
     res.render('login');
 };
@@ -30,12 +29,9 @@ exports.logOut = (req, res) => {
     });
 };
 
-// exports.addPhone = async (req, res) => {
-//     let id = await User.findOne({ email: req.body.email });
-//     id = id._id;
-
-//     res.status(200).json({
-//         status: 'success',
-//         data: { msg: 'okay' },
-//     });
-// };
+exports.listPage = (req, res) => {
+    res.render('list', {
+        name: req.user.given_name,
+        email: req.user.email,
+    });
+};
