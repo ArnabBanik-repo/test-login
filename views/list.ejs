@@ -1,94 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Listing Page</title>
-    </head>
-    <body>
-        <h1>Listing</h1>
-        <form id="form">
-            <input
-                type="text"
-                placeholder="Title"
-                id="title"
-                required
-            /><br /><br />
-            <input
-                type="text"
-                placeholder="Description"
-                id="desc"
-                required
-            /><br /><br />
-            <input
-                type="text"
-                placeholder="Image link"
-                id="img"
-                required
-            /><br /><br />
-            <span>Category</span>
-            <select id="category">
-                <option value="0">Category 1</option>
-                <option value="1">Category 2</option>
-                <option value="2">Category 3</option>
-            </select>
-            <!-- Categories in reality should be checkboxes -->
-            <br /><br />
-            <input type="number" placeholder="Size" id="size" /><br /><br />
-            <input type="text" placeholder="Color" id="color" /><br /><br />
-            <input
-                type="number"
-                placeholder="Price"
-                id="price"
-                required
-            /><br /><br />
-            <input type="submit" value="List your product" /><br /><br />
-        </form>
-        <div id="result"></div>
-        <a href="/profile">Back to Home Page</a>
 
-        <script>
-            function addProduct(event) {
-                event.preventDefault();
-                const title = document.getElementById('title').value;
-                const desc = document.getElementById('desc').value;
-                const img = document.getElementById('img').value;
-                const categories = new Array();
-                categories.push(document.getElementById('category').value);
-                const size = document.getElementById('size').value || -1;
-                const color = document.getElementById('color').value || 'NA';
-                const price = document.getElementById('price').value;
-                const product = {
-                    title,
-                    desc,
-                    img,
-                    categories,
-                    size,
-                    color,
-                    price,
-                };
-                product.listedBy = '<%= email %>';
-                fetch('/api/v1/products', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(product),
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listing Page</title>
+</head>
+
+<body>
+    <h1>Listing</h1>
+    <form id="form">
+        <input type="text" placeholder="Title" id="title" required /><br /><br />
+        <input type="text" placeholder="Description" id="desc" required /><br /><br />
+        <input type="text" placeholder="Image link" id="img" required /><br /><br />
+        <span>Category</span>
+        <select id="category">
+            <option value="0">Category 1</option>
+            <option value="1">Category 2</option>
+            <option value="2">Category 3</option>
+        </select>
+        <!-- Categories in reality should be checkboxes -->
+        <br /><br />
+        <input type="number" placeholder="Size" id="size" /><br /><br />
+        <input type="text" placeholder="Color" id="color" /><br /><br />
+        <input type="number" placeholder="Price" id="price" required /><br /><br />
+        <input type="submit" value="List your product" /><br /><br />
+    </form>
+    <div id="result"></div>
+    <a href="/profile">Back to Home Page</a>
+
+    <script>
+        function addProduct(event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const desc = document.getElementById('desc').value;
+            const img = document.getElementById('img').value;
+            const categories = new Array();
+            categories.push(document.getElementById('category').value);
+            const size = document.getElementById('size').value || -1;
+            const color = document.getElementById('color').value || 'NA';
+            const price = document.getElementById('price').value;
+            const product = {
+                title,
+                desc,
+                img,
+                categories,
+                size,
+                color,
+                price,
+            };
+            product.listedBy = '<%= email %>';
+
+
+            fetch('/api/v1/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === 'success')
+                        document.getElementById('result').innerHTML =
+                            'Your product has been listed successfully';
+                    else
+                        document.getElementById('result').innerHTML =
+                            'Sorry, that product title has been taken';
                 })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        if (data.status === 'success')
-                            document.getElementById('result').innerHTML =
-                                'Your product has been listed successfully';
-                        else
-                            document.getElementById('result').innerHTML =
-                                'Sorry, that product title has been taken';
-                    })
-                    .catch((err) => console.log(`Some error occurred ${err}`));
-            }
+                .catch((err) => console.log(`Some error occurred ${err}`));
+        }
 
-            document
-                .getElementById('form')
-                .addEventListener('submit', addProduct);
-        </script>
-    </body>
+        document
+            .getElementById('form')
+            .addEventListener('submit', addProduct);
+    </script>
+</body>
+
 </html>

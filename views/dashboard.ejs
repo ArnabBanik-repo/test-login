@@ -13,7 +13,7 @@
     </h1>
 
     <form id="form">
-        <input type="text" placeholder="Enter phone number" id="phone" />
+        <input type="Number" placeholder="Enter phone number" id="phone" />
         <input type="submit" value="Update phone number" />
     </form>
 
@@ -28,6 +28,13 @@
     <a href="/listProduct"><button>List Your Product</button></a>
 
     <script>
+        function getPhone(callback) {
+            const id = '<%= id %>'
+            fetch(`/api/v1/users/${id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(res => res.json()).then(data => callback(data.data.user.phone))
+        }
         function productDetails() {
             fetch(`/api/v1/products/${this.id}`, {
                 method: 'GET',
@@ -35,7 +42,6 @@
                     'Content-Type': 'application/json'
                 },
             }).then(res => res.json()).then(data => {
-
                 let list = document.createElement('ul')
 
                 let title = document.createTextNode(data.data.product.title)
@@ -50,9 +56,16 @@
                 let sellerItem = document.createElement('li')
                 sellerItem.appendChild(seller)
 
+                let phoneItem = document.createElement('li')
+                getPhone((phn) => {
+                    let phone = document.createTextNode('Phone: ' + phn);
+                    phoneItem.appendChild(phone)
+                });
+
                 list.appendChild(titleItem)
                 list.appendChild(priceItem)
                 list.appendChild(sellerItem)
+                list.appendChild(phoneItem)
 
                 document.getElementById('prod_details').innerHTML = ""
                 document.getElementById('prod_details').appendChild(list)
@@ -68,7 +81,7 @@
                     if (data.status === 'success') {
                         data.data.products.forEach((product) => {
                             let newItem = document.createElement('li');
-                            let text = document.createTextNode(`${product.title}`)
+                            let text = document.createTextNode(`${product.title} `)
                             let button = document.createElement('button')
                             let btntext = document.createTextNode('Details')
                             button.appendChild(btntext)
@@ -84,19 +97,18 @@
                 });
         }
         getProds();
-        function getPhone(event) {
+
+        function updatePhone(event) {
             event.preventDefault();
             const phone = document.getElementById('phone').value;
-            const email = '<%= email %>';
-
-            const response = fetch('/api/v1/users', {
+            const id = '<%= id %>'
+            const response = fetch('/api/v1/users/' + id, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     phone: phone,
-                    email: email,
                 }),
             })
                 .then((res) => res.json())
@@ -110,17 +122,8 @@
 
         document
             .getElementById('form')
-            .addEventListener('submit', getPhone);
+            .addEventListener('submit', updatePhone);
     </script>
 </body>
 
 </html>
-
-<!-- 
-
-    product_title button
-    <li>
-        My_Product
-        <button>Buy Now</button>
-    </li>
- -->

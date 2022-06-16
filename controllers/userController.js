@@ -49,11 +49,9 @@ exports.addUser = async (req, res) => {
 };
 exports.updateUser = async (req, res) => {
     try {
-        const updatedUser = await User.updateOne(
-            { email: req.body.email },
-            { ...req.body },
-            { runValidators: true }
-        );
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, {
+            ...req.body,
+        });
         res.status(200).json({
             status: 'success',
             data: {

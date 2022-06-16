@@ -1,11 +1,14 @@
+const User = require('../models/user');
 exports.loginPage = (req, res) => {
     res.render('login');
 };
 
-exports.profilePage = (req, res) => {
+exports.profilePage = async (req, res) => {
+    const user = await User.findOne({ email: req.user.email });
     res.render('dashboard', {
         username: req.user.given_name,
         email: req.user.email,
+        id: user._id,
     });
 };
 
@@ -29,7 +32,8 @@ exports.logOut = (req, res) => {
     });
 };
 
-exports.listPage = (req, res) => {
+exports.listPage = async (req, res) => {
+    let user = await User.findOne({ email: req.user.email });
     res.render('list', {
         name: req.user.given_name,
         email: req.user.email,
