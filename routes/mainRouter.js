@@ -7,6 +7,7 @@ const {
     failPage,
     logOut,
     listPage,
+    displayProduct,
 } = require('../controllers/mainController');
 
 const router = express.Router();
@@ -41,5 +42,7 @@ router.use(
 );
 
 router.get('/logout', logOut);
+
+router.get('/displayProduct/:id', displayProduct);
 
 module.exports = router;

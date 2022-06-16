@@ -35,3 +35,7 @@ exports.listPage = (req, res) => {
         email: req.user.email,
     });
 };
+
+exports.displayProduct = (req, res) => {
+    res.render('product', { ...req.params.id });
+};

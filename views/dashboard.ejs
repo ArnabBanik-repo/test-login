@@ -1,81 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Dashboard</title>
-    </head>
-    <body>
-        <h1>Welcome <%= username %></h1>
 
-        <form id="form">
-            <input type="text" placeholder="Enter phone number" id="phone" />
-            <input type="submit" value="Update phone number" />
-        </form>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+</head>
 
-        <div id="result"></div>
+<body>
+    <h1>Welcome <%= username %>
+    </h1>
 
-        <div>
-            <h2>Items on sale</h2>
-            <ul id="products"></ul>
-        </div>
+    <form id="form">
+        <input type="text" placeholder="Enter phone number" id="phone" />
+        <input type="submit" value="Update phone number" />
+    </form>
 
-        <a href="/logout"><button>Logout</button></a>
-        <a href="/listProduct"><button>List Your Product</button></a>
+    <div id="phn_res"></div>
+    <div id="prod_details"></div>
+    <div>
+        <h2>Items on sale</h2>
+        <ol id="products"></ol>
+    </div>
 
-        <script>
-            function getProds() {
-                fetch('/api/v1/products', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
+    <a href="/logout"><button>Logout</button></a>
+    <a href="/listProduct"><button>List Your Product</button></a>
+
+    <script>
+        function productDetails() {
+            fetch(`/api/v1/products/${this.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }).then(res => res.json()).then(data => {
+
+                let list = document.createElement('ul')
+
+                let title = document.createTextNode(data.data.product.title)
+                let titleItem = document.createElement('li')
+                titleItem.appendChild(title)
+
+                let price = document.createTextNode('Price: Rs.' + data.data.product.price)
+                let priceItem = document.createElement('li')
+                priceItem.appendChild(price)
+
+                let seller = document.createTextNode('Listed By: ' + data.data.product.listedBy)
+                let sellerItem = document.createElement('li')
+                sellerItem.appendChild(seller)
+
+                list.appendChild(titleItem)
+                list.appendChild(priceItem)
+                list.appendChild(sellerItem)
+
+                document.getElementById('prod_details').innerHTML = ""
+                document.getElementById('prod_details').appendChild(list)
+            })
+        }
+        function getProds() {
+            fetch('/api/v1/products', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === 'success') {
+                        data.data.products.forEach((product) => {
+                            let newItem = document.createElement('li');
+                            let text = document.createTextNode(`${product.title}`)
+                            let button = document.createElement('button')
+                            let btntext = document.createTextNode('Details')
+                            button.appendChild(btntext)
+                            button.id = `${product._id}`
+                            button.onclick = productDetails
+                            newItem.appendChild(text)
+                            newItem.appendChild(button)
+                            document
+                                .getElementById('products')
+                                .appendChild(newItem);
+                        });
+                    }
+                });
+        }
+        getProds();
+        function getPhone(event) {
+            event.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const email = '<%= email %>';
+
+            const response = fetch('/api/v1/users', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    phone: phone,
+                    email: email,
+                }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === 'success')
+                        document.getElementById('phn_res').innerHTML =
+                            'Phone number updated successfully';
                 })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        if (data.status === 'success') {
-                            data.data.products.forEach((product) => {
-                                let newItem = document.createElement('li');
+                .catch((err) => console.log(`Some error occurred ${err}`));
+        }
 
-                                newItem.appendChild(
-                                    document.createTextNode(
-                                        `${product.title} -> Rs.${product.price}. Email: ${product.listedBy}`
-                                    )
-                                );
-                                document
-                                    .getElementById('products')
-                                    .appendChild(newItem);
-                            });
-                        }
-                    });
-            }
-            getProds();
-            function getPhone(event) {
-                event.preventDefault();
-                const phone = document.getElementById('phone').value;
-                const email = '<%= email %>';
+        document
+            .getElementById('form')
+            .addEventListener('submit', getPhone);
+    </script>
+</body>
 
-                const response = fetch('/api/v1/users', {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        phone: phone,
-                        email: email,
-                    }),
-                })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        if (data.status === 'success')
-                            document.getElementById('result').innerHTML =
-                                'Phone number updated successfully';
-                    })
-                    .catch((err) => console.log(`Some error occurred ${err}`));
-            }
-
-            document
-                .getElementById('form')
-                .addEventListener('submit', getPhone);
-        </script>
-    </body>
 </html>
+
+<!-- 
+
+    product_title button
+    <li>
+        My_Product
+        <button>Buy Now</button>
+    </li>
+ -->
