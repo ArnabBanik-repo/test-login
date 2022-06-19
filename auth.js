@@ -1,6 +1,6 @@
-const passport = require('passport')
-const User = require('./models/user')
-var GoogleStrategy = require('passport-google-oauth2').Strategy
+const passport = require('passport');
+const User = require('./models/user');
+var GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 passport.use(
     new GoogleStrategy(
@@ -13,21 +13,21 @@ passport.use(
         },
         async function (request, accessToken, refreshToken, profile, done) {
             if (profile.email.indexOf('vitstudent.ac.in') == -1) {
-                return done(null, null)
+                return done(null, null);
             }
             await User.findOrCreate({
                 name: profile.given_name,
                 email: profile.email,
-            })
-            return done(null, profile)
+            });
+            return done(null, profile);
         }
     )
-)
+);
 
 passport.serializeUser(function (user, done) {
-    done(null, user)
-})
+    done(null, user);
+});
 
 passport.deserializeUser(function (user, done) {
-    done(null, user)
-})
+    done(null, user);
+});
